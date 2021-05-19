@@ -12,6 +12,8 @@ function echo(sock::TCPSocket)
     req == "quit" ? :quit : :continue
 end
 
+const SendError = (VERSION < v"1.1" ? ArgumentError : IOError)
+
 tryconnect(port::Integer; kwds...) =
     tryconnect(Sockets.localhost, port; kwds...)
 
@@ -50,7 +52,7 @@ end
     println(sock, "quit")
     @test readline(sock; keep=false) == "ok: quit"
     @test readline(sock; keep=false) == ""
-    @test_throws IOError println(sock, "are you there?")
+    @test_throws SendError println(sock, "are you there?")
     @test isopen(server) == false
 
     # Resuse the same port number.
@@ -63,7 +65,7 @@ end
     println(sock, "quit")
     @test readline(sock; keep=false) == "ok: quit"
     @test readline(sock; keep=false) == ""
-    @test_throws IOError println(sock, "are you there?")
+    @test_throws SendError println(sock, "are you there?")
 end
 
 end # module
