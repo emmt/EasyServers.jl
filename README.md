@@ -49,6 +49,45 @@ To run the server asynchronously, call `runserver` with the `@async` macro:
 ```
 
 
+## Example
+
+This is a simple example with an *echo-server* which echoes back every lines
+sent to it but exits if it receives a `"quit"` command:
+
+```julia
+using Sockets, EasyServers
+
+# Simple echo callback returning `:quit` if asked for, `:continue` otherwise.
+function echo(sock::TCPSocket)
+    str = readline(sock, keep=false)
+    println(sock, "ok: ", str)
+    str == "quit" ? :quit : :continue
+end
+
+# Create the server with an automatic port number and run it asynchronously.
+port, server = listenany(0)
+@async runserver(server, echo)
+
+# Connect a client (wait a bit to make sure the server has started).
+sleep(1)
+sock = connect(port)
+
+# Write a couple of things and check result is as expected.
+# The last message is "quit" to make the server exit.
+for msg in ("hello", "hello again", "quit")
+    println(sock, msg)
+    println(stderr, readline(sock; keep=false) == "ok: $msg")
+end
+
+# In principle server has been shitdown and client connection closed.
+readline(sock; keep=false) # should yield ""
+readline(sock; keep=false) # should yield "", etc.
+println(sock, "are you still there?") # should throw an error
+isopen(server) # should be false
+isopen(sock)   # should be false
+```
+
+
 ## Installation
 
 `EasyServers` is not yet an [offical Julia
