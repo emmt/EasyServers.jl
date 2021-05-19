@@ -2,6 +2,9 @@
 
 This package is to facilitate running TCP/IP servers in [Julia][julia-url] code.
 
+| **License**                     | **Build Status**                                                | **Code Coverage**                   |
+|:--------------------------------|:----------------------------------------------------------------|:------------------------------------|
+| [![][license-img]][license-url] | [![][travis-img]][travis-url] [![][appveyor-img]][appveyor-url] | [![][coveralls-img]][coveralls-url] |
 
 ## Usage
 
@@ -39,8 +42,7 @@ with `addr` and `port` the address and port number to be listened by the server
 and `kwds...` the keywords to pass to the `Sockets.listen` method.
 
 
-To run several servers in parallel (asynchronously), call `runserver` with the
-`@async` macro:
+To run the server asynchronously, call `runserver` with the `@async` macro:
 
 ```julia
 @async runserver(args...; kwds...)
