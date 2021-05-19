@@ -79,7 +79,7 @@ for msg in ("hello", "hello again", "quit")
     println(stderr, readline(sock; keep=false) == "ok: $msg")
 end
 
-# In principle server has been shitdown and client connection closed.
+# In principle, server has been shutdown and client connection closed.
 readline(sock; keep=false) # should yield ""
 readline(sock; keep=false) # should yield "", etc.
 println(sock, "are you still there?") # should throw an error
